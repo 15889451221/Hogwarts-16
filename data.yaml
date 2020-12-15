@@ -1,0 +1,36 @@
+add_param:
+  - [3,5,8]
+  - [-1,-2,-3]
+  -
+    - 100
+    - 200
+    - 300
+add_ids:
+  - "add_int"
+  - "add_minus"
+  - "add_bigint"
+
+sub_param:
+  - [10,5,5]
+  - [-20,30,-50]
+  - [-100,-100,0]
+sub_ids:
+  - "sub_int"
+  - "sub_minus"
+  - "sub_bigminus"
+mul_param:
+  - [50,10,500]
+  - [30,0,0]
+  - [-10,3,-30]
+mul_ids:
+  - "mul_bigint"
+  - "mul_int"
+  - "mul_minus"
+div_param:
+  - [60,30,2]
+  - [7,0,7]
+  - [0,8,0]
+div_ids:
+  - "div_bigint"
+  - "div_int"
+  - "div_zero"

@@ -8,13 +8,14 @@ def myfixture():
     yield
     print("结束计算")
 
-'''
+
 def pytest_collection_modifyitems(session,config,items):
     print(type(items))
-    items.reverse()
+    # items.reverse()
     for item in items:
         item.name=item.name.encode("utf-8").decode("unicode-escape")
         item._nodeid=item.nodeid.encode('utf-8').decode('unicode-escape')
+        '''
         print("item.name="+item.name)
         print("item._nodeid="+item._nodeid)
         if "add" in item._nodeid:

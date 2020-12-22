@@ -1,3 +1,4 @@
+import os
 from time import sleep
 
 import pytest
@@ -76,5 +77,6 @@ class Testwechat():
         sleep(3)
         ele = self.find_xpath("//*[@id='member_list']/tr[2]/td[5]/span").text
         print(ele)
-        assert ele==phone
+        assert ele==phone,"验证结果错误"
 
+    

@@ -1,3 +1,7 @@
+import logging
+
+import yaml
+from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.webdriver import WebDriver
 
@@ -5,9 +9,25 @@ from test_frame.black_handle import black_wrapper
 
 
 class BasePage():
-    def __init__(self,driver:WebDriver = None):
-        self.driver =driver
-        self.black_list=[(MobileBy.XPATH,"//*[@resource-id='com.xueqiu.android:id/iv_close']")]
+    FIND = "find"
+    ACTION = "action"
+    FIND_AND_CLICK = "find_and_click"
+    SEND = "send"
+    CONTENT = "content"
+
+    def __init__(self):
+        caps = {}
+        caps["platformName"] = "android"
+        caps["deviceName"] = "127.0.0.1:7555"
+        caps["appPackage"] = "com.xueqiu.android"
+        caps["appActivity"] = ".view.WelcomeActivityAlias"
+        caps["ensureWebviewsHavePages"] = True
+        caps["noReset"] = "true"
+        # caps["settings[waitForIdleTimeout]"] = 0
+        self.driver = webdriver.Remote("http://127.0.0.1:4723/wd/hub", caps)
+        self.driver.implicitly_wait(5)
+
+        self.black_list = [(MobileBy.XPATH, "//*[@resource-id='com.xueqiu.android:id/iv_close']")]
 
     @black_wrapper
     def find(self,by,locator):
@@ -19,6 +39,9 @@ class BasePage():
 
     def find_and_click(self,by,locator):
         self.find(by,locator).click()
+
+    def send(self,by,locator,content):
+        return self.find(by,locator).send_keys(content)
 
     def scroll_find(self,text):
         return self.driver.find_element_by_android_uiautomator('new UiScrollable(new UiSelector().'
@@ -53,3 +76,18 @@ class BasePage():
         # 通过如下两种方式定位,平时在登录有提示的地方进行获取判断
         self.driver.find_element(MobileBy.XPATH,'//*[@class=android.widget.Toast]').text
         self.driver.find_element(MobileBy.XPATH,"//*[contains(@text,'Clicked popup')]").text
+
+    def load(self,yaml_path):
+        with open(yaml_path,encoding="utf-8") as f :
+            data = yaml.load(f)
+            for step in data:
+                xpath_expr = step.get(self.FIND)
+                action = step.get(self.ACTION)
+                if action == self.FIND_AND_CLICK:
+                    self.find_and_click(MobileBy.XPATH, xpath_expr)
+                elif action == self.SEND:
+                    content = step.get(self.CONTENT)
+                    self.send(MobileBy.XPATH,xpath_expr,content)
+
+    def screenshot(self,picture_path):
+        self.driver.save_screenshot(picture_path)
